@@ -108,7 +108,6 @@ defmodule Syrup do
      :application.set_env(Syrup, :args, args)
      :application.set_env(Syrup, :starter, Process.self)
      :ok = :application.start(Syrup)
-     :appmon.start 
      receive do
       :stop -> 
          :application.stop(Syrup)
