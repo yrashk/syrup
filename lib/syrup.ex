@@ -59,38 +59,22 @@ defmodule Syrup.Syrupfile do
 end
 
 defmodule Syrup.Sup do
-     @behavior :supervisor
-
-     def start_link() do
-       :supervisor.start_link({:local, __MODULE__}, __MODULE__, [])
-     end
-
-     def start_sup(Syrup.Definitions) do
-       children = [{Syrup.Definition, {Syrup.Definition, :start_link, []},
-                   :permanent, 5000, :worker, [:dynamic]}]
-       spec = {{:simple_one_for_one, 3, 10}, children}
-       :supervisor.start_link({:local, Syrup.Definitions}, __MODULE__, spec)
-     end
-
-     def init([]) do
+    alias GenX.Supervisor, as: S
+    
+    def start_link do
       task =
       case :application.get_env(Syrup, :args) do
         {:ok, [h]} -> h
         {:ok, []} -> "default"
       end
       {:ok, starter} = :application.get_env(Syrup, :starter)
-      children = [
-                  {Syrup.Syrupfile, {Syrup.Syrupfile, :start_link, [task, starter]},
-                   :permanent, 5000, :worker, [Syrup.Syrupfile]},
-                  {Syrup.Definitions, {__MODULE__, :start_sup, [Syrup.Definitions]},
-                   :permanent, :infinity, :supervisor, [:dynamic]}
-                 ]
-      {:ok, {{:one_for_one, 3, 10}, children}}
-     end 
-
-     def init(spec), do: {:ok, spec}
-     
-    
+      tree = S.OneForOne.new(id: __MODULE__, registered: __MODULE__,
+                             children: [S.Worker.new(id: Syrup.Syrupfile, 
+                                                     start_func: {Syrup.Syrupfile, :start_link, [task, starter]}),
+                                        S.SimpleOneForOne.new(id: Syrup.Definitions, registered: Syrup.Definitions, shutdown: :infinity,
+                                                     children: [S.Worker.new(id: Syrup.Definition)])])
+      S.start_link tree
+    end
 end
 defmodule Syrup.App do
      @behavior :application
