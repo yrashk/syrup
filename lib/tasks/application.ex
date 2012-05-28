@@ -15,7 +15,7 @@ defmodule Syrup.Application do
        compiler_options: [ignore_module_conflict: true]]
   end
 
-  refer List.Chars, as: LC
+  alias List.Chars, as: LC
 
   defcall build, state: app do
       Code.compiler_options app[:compiler_options]

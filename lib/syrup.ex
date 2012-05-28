@@ -31,7 +31,7 @@ end
 defmodule Syrup.Syrupfile do
   use GenServer.Behavior
   import GenX.GenServer
-  refer :gen_server, as: GenServer
+  alias :gen_server, as: GenServer
 
   defrecord State, file: "syrup.exs", task: "default", starter: nil
 
