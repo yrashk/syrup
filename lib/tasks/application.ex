@@ -59,7 +59,7 @@ defmodule Syrup.Application do
                         registered: :registered, 
                         included_applications: :included_applications,
                         applications: :applications,
-                        env: :env, mod: :mod, start_phases: :start_phases]when app[mapping] != nil, do:
+                        env: :env, mod: :mod, start_phases: :start_phases] when app[mapping] != nil, do:
                   {key, app[mapping]})
       
        app = {:application, app_name_atom, Keyword.merge best_guess_app, app}
