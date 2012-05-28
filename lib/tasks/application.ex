@@ -1,5 +1,6 @@
 defmodule Syrup.Application do
   use Syrup.Definition
+
   def application(app) do
       Syrup.Definition.add! __MODULE__, app
   end

@@ -13,7 +13,7 @@ defmodule Syrup.Definition do
          end
      end
 
-     defmacro __using__(_,_) do
+     defmacro __using__(_) do
          quote do
            use GenServer.Behavior
            import GenX.GenServer
