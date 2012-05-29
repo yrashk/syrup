@@ -13,6 +13,11 @@ defmodule Syrup.Definition do
          end
      end
 
+     def run(task) do
+         children = :supervisor.which_children(Syrup.Definitions)
+         lc {_, pid, _, _} in children, do: Syrup.Definition.run(pid, task)
+     end
+
      defmacro __using__(_) do
          quote do
            use GenServer.Behavior
@@ -44,8 +49,7 @@ defmodule Syrup.Syrupfile do
   end
 
   defcast run(task), state: State[starter: starter]=state do
-    children = :supervisor.which_children(Syrup.Definitions)
-    lc {_, pid, _, _} in children, do: Syrup.Definition.run(pid, task)
+    Syrup.Definition.run(task)
     starter <- :stop
     {:noreply, state}
   end
