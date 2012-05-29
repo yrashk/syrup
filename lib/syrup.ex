@@ -65,7 +65,7 @@ defmodule Syrup.Sup do
       task =
       case :application.get_env(Syrup, :args) do
         {:ok, [h]} -> h
-        {:ok, []} -> "default"
+        {:ok, []} -> "help"
       end
       {:ok, starter} = :application.get_env(Syrup, :starter)
       tree = S.OneForOne.new(id: __MODULE__, registered: __MODULE__,
@@ -84,18 +84,18 @@ end
 
 defmodule Syrup do
 
-  defdelegate [task: 1], to: Syrup.Task
   defdelegate [application: 1], to: Syrup.Application
+  defdelegate [help: 0, help: 1], to: Syrup.Help
 
   def start(args // System.argv) do
      :application.load(Syrup)
      :application.set_env(Syrup, :args, args)
      :application.set_env(Syrup, :starter, Process.self)
      :ok = :application.start(Syrup)
+      Syrup.help
      receive do
       :stop -> 
          :application.stop(Syrup)
-         IO.puts ""
          :ok
      end
   end
