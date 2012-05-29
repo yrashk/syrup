@@ -90,6 +90,7 @@ defmodule Syrup do
 
   defdelegate [application: 1], to: Syrup.Application
   defdelegate [help: 0, help: 1], to: Syrup.Help
+  defdelegate [test_suite: 0, test_suite: 1], to: Syrup.TestSuite
 
   def start(args // System.argv) do
      :application.load(Syrup)

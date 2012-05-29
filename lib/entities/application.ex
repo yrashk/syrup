@@ -12,22 +12,11 @@ defmodule Syrup.Application do
 
   defp defaults do
       {:ok, cwd} = :file.get_cwd
-      [build_path: "builds", base_dir: cwd, test_paths: ["test"], test_pattern: "*_test.exs",
+      [build_path: "builds", base_dir: cwd,
        compiler_options: [ignore_module_conflict: true]]
   end
 
   alias List.Chars, as: LC
-
-  defcall test, state: app do
-      :ok = ExUnit.start []
-      Enum.each(app[:test_paths], fn(path) ->
-        Enum.each(File.wildcard(File.join([path, "**", app[:test_pattern]])), fn(file) ->
-         Code.require_file file
-        end)
-      end)
-     ExUnit.run
-     {:reply, :ok, app}
-  end
 
   defcall build, state: app do
       Code.compiler_options app[:compiler_options]
