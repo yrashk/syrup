@@ -1,8 +1,8 @@
 require GenX.GenServer
 
-defmodule Syrup.Definition do
+defmodule Syrup.Entity do
      
-     def add!(module, app), do: {:ok, _pid} = :supervisor.start_child(Syrup.Definitions, [module, [app]])
+     def add!(module, app), do: {:ok, _pid} = :supervisor.start_child(Syrup.Entities, [module, [app]])
      def start_link(module, args), do: :erlang.apply(module, :start_link, args)
 
      def run(definition, task) do
@@ -14,8 +14,8 @@ defmodule Syrup.Definition do
      end
 
      def run(task) do
-         children = :supervisor.which_children(Syrup.Definitions)
-         lc {_, pid, _, _} in children, do: Syrup.Definition.run(pid, task)
+         children = :supervisor.which_children(Syrup.Entities)
+         lc {_, pid, _, _} in children, do: Syrup.Entity.run(pid, task)
      end
 
      defmacro __using__(_) do
@@ -49,7 +49,7 @@ defmodule Syrup.Syrupfile do
   end
 
   defcast run(task), state: State[starter: starter]=state do
-    Syrup.Definition.run(task)
+    Syrup.Entity.run(task)
     starter <- :stop
     {:noreply, state}
   end
@@ -75,8 +75,8 @@ defmodule Syrup.Sup do
       tree = S.OneForOne.new(id: __MODULE__, registered: __MODULE__,
                              children: [S.Worker.new(id: Syrup.Syrupfile, 
                                                      start_func: {Syrup.Syrupfile, :start_link, [task, starter]}),
-                                        S.SimpleOneForOne.new(id: Syrup.Definitions, registered: Syrup.Definitions, shutdown: :infinity,
-                                                     children: [S.Worker.new(id: Syrup.Definition)])])
+                                        S.SimpleOneForOne.new(id: Syrup.Entities, registered: Syrup.Entities, shutdown: :infinity,
+                                                     children: [S.Worker.new(id: Syrup.Entity)])])
       S.start_link tree
     end
 end

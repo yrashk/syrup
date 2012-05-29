@@ -1,8 +1,8 @@
 defmodule Syrup.Application do
-  use Syrup.Definition
+  use Syrup.Entity
 
   def application(app) do
-      Syrup.Definition.add! __MODULE__, app
+      Syrup.Entity.add! __MODULE__, app
   end
 
   def init(app) do

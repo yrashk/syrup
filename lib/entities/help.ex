@@ -1,8 +1,8 @@
 defmodule Syrup.Help do
-  use Syrup.Definition
+  use Syrup.Entity
 
   def help(options // []) do
-      Syrup.Definition.add! __MODULE__, options
+      Syrup.Entity.add! __MODULE__, options
   end
 
   def init(options) do
