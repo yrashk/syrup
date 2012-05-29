@@ -63,6 +63,8 @@ defmodule Syrup.Application do
                         env: :env, mod: :mod, start_phases: :start_phases] when app[mapping] != nil, do:
                   {key, app[mapping]})
       
+       app = Keyword.put app, :applications, (List.uniq (app[:applications]||[]) ++ [:kernel, :stdlib, :elixir])
+
        app = {:application, app_name_atom, Keyword.merge best_guess_app, app}
 
        # write down the .app file
