@@ -15,7 +15,7 @@ defmodule Syrup.Entity do
 
      def run(task) do
          children = :supervisor.which_children(Syrup.Entities)
-         lc {_, pid, _, _} in children, do: Syrup.Entity.run(pid, task)
+         lc {_, pid, _, _} inlist children, do: Syrup.Entity.run(pid, task)
      end
 
      defmacro __using__(_) do

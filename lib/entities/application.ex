@@ -47,14 +47,14 @@ defmodule Syrup.Application do
       compile_path = "#{build_path}/#{app_name}-#{app[:version]}/ebin"
 
       modules = 
-      lc file in File.wildcard("#{compile_path}/**/*.beam") do
+      lc file inlist File.wildcard("#{compile_path}/**/*.beam") do
           s = Regex.replace_all(%r/\//, Regex.replace(%r/#{compile_path}\/__MAIN__\/(.+)\.beam/, file, "\\1"), ".")
           Module.concat [s]
       end
 
        best_guess_app = [vsn: (LC.to_char_list (app[:version]||app[:vsn])), modules: modules]
        app = Keyword.from_enum(
-               lc {key, mapping} in [description: :description,
+               lc {key, mapping} inlist [description: :description,
                         id: :id, modules: :modules,
                         max_p: :maxP, max_t: :max_T,
                         registered: :registered, 
@@ -76,7 +76,7 @@ defmodule Syrup.Application do
   
 
   defp extract_files(paths) do
-    List.concat(lc path in paths, do: File.wildcard(File.join([path, "**/*.ex"])))
+    List.concat(lc path inlist paths, do: File.wildcard(File.join([path, "**/*.ex"])))
   end
 
   defp compile_files(files, to) do
